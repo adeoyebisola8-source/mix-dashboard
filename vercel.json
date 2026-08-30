@@ -1,7 +1,10 @@
 {
   "version": 2,
-  "outputDirectory": "public",
   "builds": [
+    {
+      "src": "public/index.html",
+      "use": "@vercel/static"
+    },
     {
       "src": "api/**/*.js",
       "use": "@vercel/node"
@@ -13,8 +16,8 @@
       "dest": "api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/.*",
+      "dest": "public/index.html"
     }
   ]
 }
