@@ -56,10 +56,6 @@
         .section-subtitle { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 20px; }
         .retention-section { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
         .retention-title { font-size: 18px; font-weight: 700; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px; }
-        .retention-table { width: 100%; font-size: 13px; border-collapse: collapse; }
-        .retention-table th { background: linear-gradient(135deg, #667eea15, #764ba215); padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #667eea30; color: #667eea; }
-        .retention-table td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); color: #555; }
-        .retention-bar { background: linear-gradient(90deg, #667eea, #764ba2); height: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; border-radius: 6px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
     </style>
 </head>
 <body>
@@ -250,24 +246,79 @@
                 </div>
                 <div class="retention-section">
                     <div class="retention-title">📊 Retention Cohort Analysis</div>
-                    <table class="retention-table">
-                        <thead>
-                            <tr>
-                                <th>📅 Day</th>
-                                <th>👥 Users</th>
-                                <th>📈 Retention</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>D0</strong></td><td>${data.dau.toLocaleString()}</td><td><div class="retention-bar" style="width: 100%;">100%</div></td></tr>
-                            <tr><td><strong>D1</strong></td><td>${Math.round(data.dau * 0.92).toLocaleString()}</td><td><div class="retention-bar" style="width: ${data.retention.d1}%;">${data.retention.d1}%</div></td></tr>
-                            <tr><td><strong>D7</strong></td><td>${Math.round(data.dau * 0.68).toLocaleString()}</td><td><div class="retention-bar" style="width: ${data.retention.d7}%;">${data.retention.d7}%</div></td></tr>
-                            <tr><td><strong>D30</strong></td><td>${Math.round(data.dau * 0.34).toLocaleString()}</td><td><div class="retention-bar" style="width: ${data.retention.d30}%;">${data.retention.d30}%</div></td></tr>
-                        </tbody>
-                    </table>
+                    <div style="position: relative; height: 400px;">
+                        <canvas id="retentionChart"></canvas>
+                    </div>
                 </div>
             `;
             document.getElementById('contentArea').innerHTML = html;
+            setTimeout(() => drawRetentionChart(data), 100);
+        }
+
+        function drawRetentionChart(data) {
+            const ctx = document.getElementById('retentionChart');
+            if (!ctx) return;
+            
+            if (window.retentionChart) {
+                window.retentionChart.destroy();
+            }
+            
+            window.retentionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['D0', 'D1', 'D7', 'D30'],
+                    datasets: [{
+                        label: 'Retention %',
+                        data: [data.retention.d0, data.retention.d1, data.retention.d7, data.retention.d30],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#666',
+                                font: { size: 12, weight: '500' },
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                color: '#888',
+                                font: { size: 11 }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#888',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         init();
