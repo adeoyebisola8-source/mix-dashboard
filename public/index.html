@@ -168,11 +168,11 @@
                     dashboardData = result.data;
                     renderContent();
                 } else {
-                    document.getElementById('contentArea').innerHTML = `<div style="color: #ef4444; padding: 20px;">Error loading data</div>`;
+                    document.getElementById('contentArea').innerHTML = `<div style="color: #ef4444; padding: 20px; text-align: center;">Failed to fetch data from Mixpanel</div>`;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('contentArea').innerHTML = `<div style="color: #ef4444; padding: 20px;">Failed to fetch data from Mixpanel</div>`;
+                document.getElementById('contentArea').innerHTML = `<div style="color: #ef4444; padding: 20px; text-align: center;">Failed to fetch data from Mixpanel</div>`;
             }
         }
 
