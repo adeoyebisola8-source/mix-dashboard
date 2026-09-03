@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "echo done",
   "builds": [
     {
       "src": "api/data.js",
