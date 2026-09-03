@@ -86,4 +86,4 @@ export default async function handler(req, res) {
       details: 'Failed to fetch from Mixpanel'
     });
   }
-};
+}
