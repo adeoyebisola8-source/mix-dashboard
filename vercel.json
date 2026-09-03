@@ -2,9 +2,6 @@
   "version": 2,
   "buildCommand": "echo 'build complete'",
   "outputDirectory": "public",
-  "env": {
-    "NODE_ENV": "production"
-  },
   "builds": [
     {
       "src": "api/**/*.js",
@@ -18,7 +15,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/index.html"
     }
   ]
 }
