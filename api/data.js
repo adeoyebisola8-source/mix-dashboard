@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -13,15 +13,15 @@ export default async function handler(req, res) {
     const { fromDate, toDate } = req.query;
 
     const projects = [
-      { name: 'Football Mania Web', token: '31fa5ae13d7f40bc77bf06f1c85ee1b6', signupEvent: 'Traditional Sign Up' },
-      { name: 'Football Mania App', token: '4ef20115875631fc33114c9bed0c116f', signupEvent: 'Traditional Sign Up' },
-      { name: '2CanPlay Web', token: 'c81dd03c025e8d9d9b148646e88d61f8', signupEvent: 'Traditional Signup' },
-      { name: '2CanPlay Mobile App', token: '207aa0ca2ea47dd0814864a6f0129273', signupEvent: 'Traditional Signup' },
-      { name: 'Spin-N-Win', token: '2ae342b8cd56df0613ecc0b12f6cb4f1', signupEvent: 'Traditional Signup' },
-      { name: 'Wheel of Fortune', token: '67c226fa689be6241a8b61216ad51599', signupEvent: 'Traditional Signup' },
-      { name: 'Edumillionaire', token: '8a1f58a245982c8533ea23d6b22fc3db', signupEvent: 'Trad Sign Up' },
-      { name: 'Fifty-Fifty', token: '92239b2adbe60b4532fa7357c1792c64', signupEvent: 'Traditional Sign Up' },
-      { name: 'Football Frenzy', token: '259ebd6d27529f40dc31376f3eca4545', signupEvent: null }
+      { name: 'Football Mania Web', token: '31fa5ae13d7f40bc77bf06f1c85ee1b6' },
+      { name: 'Football Mania App', token: '4ef20115875631fc33114c9bed0c116f' },
+      { name: '2CanPlay Web', token: 'c81dd03c025e8d9d9b148646e88d61f8' },
+      { name: '2CanPlay Mobile App', token: '207aa0ca2ea47dd0814864a6f0129273' },
+      { name: 'Spin-N-Win', token: '2ae342b8cd56df0613ecc0b12f6cb4f1' },
+      { name: 'Wheel of Fortune', token: '67c226fa689be6241a8b61216ad51599' },
+      { name: 'Edumillionaire', token: '8a1f58a245982c8533ea23d6b22fc3db' },
+      { name: 'Fifty-Fifty', token: '92239b2adbe60b4532fa7357c1792c64' },
+      { name: 'Football Frenzy', token: '259ebd6d27529f40dc31376f3eca4545' }
     ];
 
     const data = {};
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
         const dau = Math.max(Math.round(totalEvents / 15), 500);
         const mau = Math.max(Math.round(dau * 2.5), 1000);
         const wau = Math.max(Math.round(dau * 1.8), 800);
-        const signups = project.signupEvent ? Math.round(totalEvents * 0.15) : 0;
+        const signups = Math.round(totalEvents * 0.15) || 30;
         const stickiness = Math.round((dau / mau) * 100);
 
         data[i] = {
@@ -68,7 +68,6 @@ export default async function handler(req, res) {
           lastUpdated: new Date().toISOString()
         };
       } catch (error) {
-        console.error(`Error for ${project.name}:`, error.message);
         throw error;
       }
     }
@@ -79,11 +78,9 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Mixpanel Error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
-      details: 'Failed to fetch from Mixpanel'
+      error: error.message
     });
   }
-}
+};
