@@ -1,7 +1,7 @@
 {
   "name": "mixpanel-dashboard",
   "version": "1.0.0",
-  "type": "module",
+  "type": "commonjs",
   "description": "Mixpanel Analytics Dashboard",
   "main": "api/data.js",
   "scripts": {
