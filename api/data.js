@@ -10,7 +10,10 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { fromDate, toDate } = req.query;
+    // Use only TODAY for testing
+    const today = new Date().toISOString().split('T')[0];
+    const fromDate = today;
+    const toDate = today;
 
     const projects = [
       { name: 'Football Mania Web', secret: 'f776707e8355be817ac1e68235f9671d', region: 'us' },
@@ -30,7 +33,6 @@ module.exports = async (req, res) => {
       const project = projects[i];
       const auth = Buffer.from(`${project.secret}:`).toString('base64');
       
-      // Use correct endpoint based on region
       const baseUrl = project.region === 'eu' 
         ? 'https://data-eu.mixpanel.com/api/2.0/export'
         : 'https://data.mixpanel.com/api/2.0/export';
@@ -45,12 +47,11 @@ module.exports = async (req, res) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Mixpanel API failed for ${project.name}: ${response.status} ${response.statusText}`);
+        throw new Error(`Mixpanel API failed for ${project.name}: ${response.status}`);
       }
 
       const result = await response.json();
 
-      // Parse Mixpanel response
       let dau = 500, mau = 1000, wau = 800, signups = 30;
 
       if (result && Array.isArray(result)) {
@@ -82,12 +83,7 @@ module.exports = async (req, res) => {
         churnRate: Math.max(Math.round(100 - stickiness), 5),
         sessionLength: parseFloat((8 + (i * 2)).toFixed(1)),
         sessionFrequency: parseFloat((4 + (i * 0.5)).toFixed(1)),
-        retention: {
-          d0: 100,
-          d1: 92 - (i % 3),
-          d7: 68 - (i % 4),
-          d30: 34 - (i % 5)
-        },
+        retention: { d0: 100, d1: 92 - (i % 3), d7: 68 - (i % 4), d30: 34 - (i % 5) },
         lastUpdated: new Date().toISOString()
       };
     }
@@ -101,8 +97,7 @@ module.exports = async (req, res) => {
     console.error('Mixpanel API Error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
-      details: 'Failed to fetch data from Mixpanel'
+      error: error.message
     });
   }
 };
